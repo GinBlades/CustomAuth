@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9408E06C-BAFD-4624-9A48-343F26609223}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{97E7DF77-EFB9-422C-8BD5-AC6B9D8272D2}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AuthenticateCoreWeb", "src\AuthenticateCoreWeb\AuthenticateCoreWeb.xproj", "{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234} = {9408E06C-BAFD-4624-9A48-343F26609223}
+	EndGlobalSection
+EndGlobal
