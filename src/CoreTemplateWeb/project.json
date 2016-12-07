@@ -1,4 +1,4 @@
-﻿{
+{
     "userSecretsId": "aspnet-CoreTemplate-d78643cd-1444-4157-888a-871a7576b207",
     "dependencies": {
         "Microsoft.NETCore.App": {
@@ -19,7 +19,8 @@
         "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
         "Npgsql.EntityFrameworkCore.PostgreSQL.Design": "1.1.0",
         "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.1.0",
-        "Microsoft.EntityFrameworkCore.Design": "1.1.0"
+        "Microsoft.EntityFrameworkCore.Design": "1.1.0",
+        "Moq": "4.6.38-alpha"
     },
 
     "tools": {
