@@ -18,7 +18,8 @@
         "Microsoft.Extensions.Logging.Debug": "1.1.0",
         "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
         "Npgsql.EntityFrameworkCore.PostgreSQL.Design": "1.1.0",
-        "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.1.0"
+        "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.1.0",
+        "Microsoft.EntityFrameworkCore.Design": "1.1.0"
     },
 
     "tools": {
