@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace AuthenticateCoreWeb.Controllers
+namespace CoreTemplateWeb.Controllers
 {
     public class HomeController : Controller
     {

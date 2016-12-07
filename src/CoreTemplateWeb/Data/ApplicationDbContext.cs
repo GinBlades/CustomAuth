@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AuthenticateCoreWeb.Data {
+namespace CoreTemplateWeb.Data {
     public class ApplicationDbContext : DbContext {
         public ApplicationDbContext(DbContextOptions options) : base(options) { }
 

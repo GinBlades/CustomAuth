@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using AuthenticateCoreWeb.Data;
+using CoreTemplateWeb.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace AuthenticateCoreWeb {
+namespace CoreTemplateWeb {
     public class Startup {
         public IConfigurationRoot Configuration { get; }
 

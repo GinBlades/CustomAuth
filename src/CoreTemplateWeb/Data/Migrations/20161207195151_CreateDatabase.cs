@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AuthenticateCoreWeb.Data.Migrations
+namespace CoreTemplateWeb.Data.Migrations
 {
     public partial class CreateDatabase : Migration
     {

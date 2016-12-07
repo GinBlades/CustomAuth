@@ -7,10 +7,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9408E06C-BAF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{97E7DF77-EFB9-422C-8BD5-AC6B9D8272D2}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		global.json = global.json
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AuthenticateCoreWeb", "src\AuthenticateCoreWeb\AuthenticateCoreWeb.xproj", "{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CoreTemplateWeb", "src\CoreTemplateWeb\CoreTemplateWeb.xproj", "{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
