@@ -1,0 +1,5 @@
+﻿{
+    "rules": {
+        "no-var-keyword": true
+    }
+}

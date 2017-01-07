@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using CoreTemplateWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using CoreTemplateWeb.Services;
 
 namespace CoreTemplateWeb {
     public class Startup {
@@ -34,6 +35,7 @@ namespace CoreTemplateWeb {
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<AssetFileHash>();
             services.AddMvc();
         }
 
