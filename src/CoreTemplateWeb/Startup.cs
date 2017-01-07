@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using CoreTemplateWeb.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace CoreTemplateWeb {
     public class Startup {
@@ -20,7 +21,9 @@ namespace CoreTemplateWeb {
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-            builder.AddUserSecrets();
+            if (env.IsDevelopment()) {
+                builder.AddUserSecrets();
+            }
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -42,6 +45,13 @@ namespace CoreTemplateWeb {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+            }
+
+            if (env.IsProduction()) {
+                loggerFactory.AddFile("logs/CoreTemplate.log");
+                app.UseForwardedHeaders(new ForwardedHeadersOptions {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                });
             }
 
             app.UseStaticFiles();
