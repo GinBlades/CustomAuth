@@ -1,5 +1,5 @@
 {
-    "userSecretsId": "aspnet-CustomAuth-d78643cd-1444-4157-888a-871a7576b207",
+    "userSecretsId": "aspnet-CustomAuth-6e06124f-bcf2-4971-a690-05eea4c0523a",
     "dependencies": {
         "AutoMapper": "5.2.0",
         "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
