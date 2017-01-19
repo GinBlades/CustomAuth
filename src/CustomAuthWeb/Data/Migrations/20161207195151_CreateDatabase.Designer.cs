@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using CoreTemplateWeb.Data;
+using CustomAuthWeb.Data;
 
-namespace CoreTemplateWeb.Data.Migrations
+namespace CustomAuthWeb.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20161207195151_CreateDatabase")]

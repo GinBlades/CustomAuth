@@ -6,7 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace CoreTemplateWeb.Services {
+namespace CustomAuthWeb.Services {
     public class AssetFileHash {
         private readonly IHostingEnvironment _env;
         public AssetFileHash(IHostingEnvironment env) {

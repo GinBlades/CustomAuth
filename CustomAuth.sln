@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CoreTemplateWeb", "src\CoreTemplateWeb\CoreTemplateWeb.xproj", "{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CustomAuthWeb", "src\CustomAuthWeb\CustomAuthWeb.xproj", "{8E5B6EF2-24C9-46E5-A694-5C9F07BF6234}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "test", "test\test.xproj", "{10BC557E-912F-413F-A656-B034E7A16BFD}"
 EndProject

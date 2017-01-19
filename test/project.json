@@ -9,7 +9,7 @@
         "xunit": "2.1.0",
         "dotnet-test-xunit": "1.0.0-rc2-build10025",
         "Moq": "4.6.38-alpha",
-        "CoreTemplateWeb": "1.0.0-*"
+        "CustomAuthWeb": "1.0.0-*"
     },
   "testRunner": "xunit",
   "frameworks": {

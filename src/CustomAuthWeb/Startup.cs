@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using CoreTemplateWeb.Data;
+using CustomAuthWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
-using CoreTemplateWeb.Services;
+using CustomAuthWeb.Services;
 
-namespace CoreTemplateWeb {
+namespace CustomAuthWeb {
     public class Startup {
         public IConfigurationRoot Configuration { get; }
 
@@ -50,7 +50,7 @@ namespace CoreTemplateWeb {
             }
 
             if (env.IsProduction()) {
-                loggerFactory.AddFile("logs/CoreTemplate.log");
+                loggerFactory.AddFile("logs/CustomAuth.log");
                 app.UseForwardedHeaders(new ForwardedHeadersOptions {
                     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
                 });

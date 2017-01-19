@@ -1,5 +1,5 @@
 {
-    "userSecretsId": "aspnet-CoreTemplate-d78643cd-1444-4157-888a-871a7576b207",
+    "userSecretsId": "aspnet-CustomAuth-d78643cd-1444-4157-888a-871a7576b207",
     "dependencies": {
         "AutoMapper": "5.2.0",
         "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
