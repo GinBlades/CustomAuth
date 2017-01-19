@@ -1,6 +1,18 @@
-# ASP.NET Core MVC Template
+# ASP.NET Core MVC Custom Authentication
 
-This will be a general purpose template for starting ASP.NET Core MVC projects.
+I'm not quite sold on Microsoft's Identity Framework yet, and it will be an education experience for me to try setting up
+an authentication and authorization process myself. Some things I want to do differently:
+
+* User ID as an integer
+* Using [flag enums](http://stackoverflow.com/questions/8447/what-does-the-flags-enum-attribute-mean-in-c) to manage roles.
+
+Some things that I want to keep from Identity Framework
+
+* Attribute authorization for controllers and actions.
+* Allow at least Google+, Facebook and Twitter as Oauth providers.
+
+I don't really expect to make this project extensible. My goal is just to learn more about the authentication and authorization process
+and then apply this to my future applications.
 
 ## Packages
 
@@ -11,13 +23,3 @@ User secrets will be used to store database configuration.
     ConnectionStrings:DefaultConnection
     User ID=username;Password=secretpassword;Host=localhost;Port=5432;Database=dbname;Pooling=true;
 
-## Renaming Solution
-
-Some files and namespaces within files will need to be renamed.
-
-* From the root, `CustomAuth.sln` should be renamed and any usage of `CustomAuth` within the file should be replaced.
-* There are file paths to be renamed in `.vs/restore.dg`, but I'm not sure if this is necessary since it is not checked in to git.
-* In the project files, anywhere the `CustomAuthWeb` namespace is used, rename it.
-* Rename the `.xproj` file and the `RootNamespace` element in that file.
-* References for the test project will need to be renamed.
-* Rename the repository in `.git/config` so changes don't get accidentally pushed to the main template.
