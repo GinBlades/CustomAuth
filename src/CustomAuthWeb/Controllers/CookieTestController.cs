@@ -16,11 +16,16 @@ namespace CustomAuthWeb.Controllers {
             _secrets = secrets.Value;
         }
         public IActionResult Index() {
+            var key = _secrets.SecretKey;
+
+            var encrypted = SimpleEncrypter.SimpleEncrypt("This is a test with encryption", Convert.FromBase64String("derp"));
+            var decrypted = SimpleEncrypter.SimpleDecrypt(encrypted.Item1, Convert.FromBase64String("derp"), encrypted.Item2);
+
             CookieOptions options = new CookieOptions() {
                 Expires = DateTime.Now.AddDays(1)
             };
             Response.Cookies.Append("TestCookie", "This is a test", options);
-            return Content(_secrets.SecretKey);
+            return Content(decrypted);
         }
 
         public IActionResult ReadCookie() {
