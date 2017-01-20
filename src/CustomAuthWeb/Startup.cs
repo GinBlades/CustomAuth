@@ -33,6 +33,8 @@ namespace CustomAuthWeb {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services) {
+            services.AddOptions();
+            services.Configure<AppSecrets>(Configuration.GetSection("AppSecrets"));
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<DbSeeder>();
