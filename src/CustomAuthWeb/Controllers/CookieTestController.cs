@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using CustomAuthWeb.Services;
 using Microsoft.Extensions.Options;
+using System.Text;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,10 +17,8 @@ namespace CustomAuthWeb.Controllers {
             _secrets = secrets.Value;
         }
         public IActionResult Index() {
-            var key = _secrets.SecretKey;
-
-            var encrypted = SimpleEncrypter.SimpleEncrypt("This is a test with encryption", Convert.FromBase64String("derp"));
-            var decrypted = SimpleEncrypter.SimpleDecrypt(encrypted.Item1, Convert.FromBase64String("derp"), encrypted.Item2);
+            var encrypted = SimpleEncrypter.EncryptToString("This is a test with encryption", Convert.FromBase64String(_secrets.SecretKey));
+            var decrypted = SimpleEncrypter.DecryptFromString(encrypted, Convert.FromBase64String(_secrets.SecretKey));
 
             CookieOptions options = new CookieOptions() {
                 Expires = DateTime.Now.AddDays(1)
