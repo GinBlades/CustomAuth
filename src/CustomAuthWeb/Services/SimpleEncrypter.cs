@@ -20,13 +20,17 @@ namespace CustomAuthWeb.Services {
             return key;
         }
 
-        public static Tuple<string, byte[]> Encrypt(string plainText, byte[] cryptKey) {
+        public static Tuple<string, byte[]> Encrypt(string plainText, byte[] cryptKey, byte[] existingIv = null) {
             byte[] encrypted;
             byte[] iv;
             using (var aes = Aes.Create()) {
                 aes.GenerateIV();
-                iv = aes.IV;
-                var encryptor = aes.CreateEncryptor(cryptKey, aes.IV);
+                if (existingIv != null) {
+                    iv = existingIv;
+                } else {
+                    iv = aes.IV;
+                }
+                var encryptor = aes.CreateEncryptor(cryptKey, iv);
                 using (var memStream = new MemoryStream()) {
                     using (var cryptStream = new CryptoStream(memStream, encryptor, CryptoStreamMode.Write)) {
                         using (var streamWriter = new StreamWriter(cryptStream)) {
