@@ -15,20 +15,19 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 namespace CustomAuthWeb.Controllers {
     public class CookieTestController : Controller {
         private readonly AppSecrets _secrets;
-        public CookieTestController(IOptions<AppSecrets> secrets) {
+        private readonly SimpleEncryptor _encryptor;
+        private readonly SimpleHasher _hasher;
+        public CookieTestController(IOptions<AppSecrets> secrets, SimpleEncryptor encryptor, SimpleHasher hasher) {
             _secrets = secrets.Value;
+            _encryptor = encryptor;
+            _hasher = hasher;
         }
         public IActionResult Index() {
-            var encrypted = SimpleEncrypter.EncryptToString("This is a test with encryption", Convert.FromBase64String(_secrets.SecretKey));
-            var decrypted = SimpleEncrypter.DecryptFromString(encrypted, Convert.FromBase64String(_secrets.SecretKey));
+            string encrypted = _encryptor.EncryptToString("This is a test using DI");
+            string decrypted = _encryptor.DecryptFromString(encrypted);
 
-            byte[] salt = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create()) {
-                rng.GetBytes(salt);
-            }
-
-            string hashed = SimplePasswordHasher.HashWithEncryption("secret", salt, Convert.FromBase64String(_secrets.SecretKey));
-            bool valid = SimplePasswordHasher.CompareWithEncryption(guess: "secret", password: hashed, key: Convert.FromBase64String(_secrets.SecretKey));
+            string hashed = _hasher.HashWithEncryption("secret");
+            bool valid = _hasher.CompareWithEncryption("secret", hashed);
 
             var result = valid == true ? "True" : "False";
 

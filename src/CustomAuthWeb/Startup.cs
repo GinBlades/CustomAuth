@@ -39,6 +39,8 @@ namespace CustomAuthWeb {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<DbSeeder>();
             services.AddSingleton<AssetFileHash>();
+            services.AddTransient<SimpleEncryptor>();
+            services.AddTransient<SimpleHasher>();
             services.AddMvc();
         }
 
