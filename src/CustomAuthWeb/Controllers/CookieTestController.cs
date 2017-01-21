@@ -35,7 +35,12 @@ namespace CustomAuthWeb.Controllers {
                 Expires = DateTime.Now.AddDays(1)
             };
             Response.Cookies.Append("TestCookie", "This is a test", options);
-            return Content(result);
+            var encryptionTests = new string[] {
+                _hasher.HashWithEncryption("This is the full length of a possible password."),
+                _hasher.HashWithEncryption("small"),
+                _hasher.HashWithEncryption("With!Speci#@@$%&!12345")
+            };
+            return Content(string.Join("<br/>", encryptionTests));
         }
 
         public IActionResult ReadCookie() {

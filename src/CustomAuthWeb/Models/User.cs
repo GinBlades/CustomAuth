@@ -12,7 +12,9 @@ namespace CustomAuthWeb.Models {
         public string Email { get; set; }
         [Required, MaxLength(30)]
         public string UserName { get; set; }
-        [Required]
+        // 102 Ensures the length is a hashed password in the current format.
+        // If the password format changes, this will have to change also.
+        [Required, StringLength(102, MinimumLength = 102)]
         public string Password { get; set; }
         [Required]
         public UserRole Roles { get; set; }

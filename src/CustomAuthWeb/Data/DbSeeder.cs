@@ -1,4 +1,5 @@
 ﻿using CustomAuthWeb.Models;
+using CustomAuthWeb.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,9 +11,11 @@ namespace CustomAuthWeb.Data {
     public class DbSeeder {
         private readonly ApplicationDbContext _db;
         private readonly IHostingEnvironment _env;
-        public DbSeeder(ApplicationDbContext db, IHostingEnvironment env) {
+        private readonly SimpleHasher _hasher;
+        public DbSeeder(ApplicationDbContext db, IHostingEnvironment env, SimpleHasher hasher) {
             _db = db;
             _env = env;
+            _hasher = hasher;
         }
 
         public async Task SeedAsync() {
@@ -28,28 +31,28 @@ namespace CustomAuthWeb.Data {
             var admin = new User() {
                 Email = "admin@example.com",
                 UserName = "Admin",
-                Password = "secret",
+                Password = _hasher.HashWithEncryption("secret"),
                 Roles = UserRole.Administrator | UserRole.Member
             };
 
             var moderator = new User() {
                 Email = "moderator@example.com",
                 UserName = "Mod",
-                Password = "secret",
+                Password = _hasher.HashWithEncryption("secret"),
                 Roles = UserRole.Moderator | UserRole.Member
             };
 
             var member = new User() {
                 Email = "member@example.com",
                 UserName = "Member",
-                Password = "secret",
+                Password = _hasher.HashWithEncryption("secret"),
                 Roles = UserRole.Member
             };
 
             var guest = new User() {
                 Email = "guest@example.com",
                 UserName = "Guest",
-                Password = "secret",
+                Password = _hasher.HashWithEncryption("secret"),
                 Roles = UserRole.Guest
             };
             var users = new User[] { admin, moderator, member, guest };
