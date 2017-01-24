@@ -12,6 +12,7 @@ using CustomAuthWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using CustomAuthWeb.Services;
+using CustomAuthWeb.Filters;
 
 namespace CustomAuthWeb {
     public class Startup {
@@ -41,7 +42,17 @@ namespace CustomAuthWeb {
             services.AddSingleton<AssetFileHash>();
             services.AddTransient<SimpleEncryptor>();
             services.AddTransient<SimpleHasher>();
-            services.AddMvc();
+            services.AddScoped<AuthenticationFilter>();
+
+            // Using dependency injection here requires initializing the provider.
+            // http://stackoverflow.com/questions/31863981/how-to-resolve-instance-inside-configureservices-in-asp-net-core
+            var serviceProvider = services.BuildServiceProvider();
+            var encryptorService = serviceProvider.GetService<SimpleEncryptor>();
+            var dbContextService = serviceProvider.GetService<ApplicationDbContext>();
+
+            services.AddMvc(config => {
+                config.Filters.Add(new AuthenticationFilter(dbContextService, encryptorService));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
