@@ -22,9 +22,18 @@ namespace CustomAuthWeb.Models {
 
     [Flags]
     public enum UserRole {
-        Guest = 1 << 0, // Unpaid
-        Member = 1 << 1, // Paid
-        Moderator = 1 << 2, // Allowed edit rights to some resources
-        Administrator = 1 << 3 // Full administration rights
+        // Passed to filter
+        GuestAccess = 1 << 0, // Unpaid
+        MemberAccess = 1 << 1, // Paid
+        ModeratorAccess = 1 << 2, // Allowed edit rights to some resources
+        AuthorAccess = 1 << 3, // Allowed to edit only post resources (for example)
+        AdministratorAccess = 1 << 4, // Full administration rights
+
+        // Given to users
+        Guest = GuestAccess,
+        Member = Guest | MemberAccess,
+        Moderator = Member | ModeratorAccess,
+        Author = Member | AuthorAccess,
+        Administrator = Moderator | AdministratorAccess
     }
 }

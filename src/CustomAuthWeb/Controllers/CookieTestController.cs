@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using CustomAuthWeb.Filters;
+using CustomAuthWeb.Models;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -45,6 +47,21 @@ namespace CustomAuthWeb.Controllers {
 
         public IActionResult ReadCookie() {
             return Content(Request.Cookies["TestCookie"]);
+        }
+
+        [AuthorizationFilter(UserRole.MemberAccess)]
+        public IActionResult MemberTest() {
+            return Content("You are a member!");
+        }
+
+        [AuthorizationFilter]
+        public IActionResult GuestTest() {
+            return Content("You are at least a guest!");
+        }
+
+        [AuthorizationFilter(UserRole.AdministratorAccess)]
+        public IActionResult AdminTest() {
+            return Content("You are an admin!");
         }
     }
 }

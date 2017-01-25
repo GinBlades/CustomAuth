@@ -50,9 +50,12 @@ namespace CustomAuthWeb {
             var encryptorService = serviceProvider.GetService<SimpleEncryptor>();
             var dbContextService = serviceProvider.GetService<ApplicationDbContext>();
 
+
             services.AddMvc(config => {
                 config.Filters.Add(new AuthenticationFilter(dbContextService, encryptorService));
             });
+            // Must come after AuthenticationFilter
+            services.AddScoped<AuthorizationFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
