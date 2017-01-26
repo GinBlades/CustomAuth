@@ -34,9 +34,17 @@
         </div>
     </nav>
     <div class="container">
+        @if (TempData["Alert"] != null) {
+            <div class="alert alert-danger">
+                @TempData["Alert"]
+            </div>
+        }
         @RenderBody()
     </div>
     <script src="~/@AssetFileHash.LinkWithHash("js/vendor.js")"></script>
     <script src="~/@AssetFileHash.LinkWithHash("js/app.js")"></script>
 </body>
+
+
+
 </html>

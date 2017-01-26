@@ -38,6 +38,12 @@ namespace CustomAuthWeb {
             services.Configure<AppSecrets>(Configuration.GetSection("AppSecrets"));
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDistributedMemoryCache();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromSeconds(60);
+                options.CookieHttpOnly = true;
+            });
+
             services.AddSingleton<DbSeeder>();
             services.AddSingleton<AssetFileHash>();
             services.AddTransient<SimpleEncryptor>();
@@ -49,8 +55,7 @@ namespace CustomAuthWeb {
             var serviceProvider = services.BuildServiceProvider();
             var encryptorService = serviceProvider.GetService<SimpleEncryptor>();
             var dbContextService = serviceProvider.GetService<ApplicationDbContext>();
-
-
+            
             services.AddMvc(config => {
                 config.Filters.Add(new AuthenticationFilter(dbContextService, encryptorService));
             });
@@ -77,6 +82,7 @@ namespace CustomAuthWeb {
 
             app.UseStaticFiles();
 
+            app.UseSession();            
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
