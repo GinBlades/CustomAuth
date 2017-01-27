@@ -1,8 +1,4 @@
 ﻿using CustomAuthWeb.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CustomAuthWeb.ViewModels {
     public class AuthenticatedUser {

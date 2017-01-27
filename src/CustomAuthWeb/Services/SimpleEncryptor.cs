@@ -1,12 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomAuthWeb.Services {
     /// <summary>
@@ -61,11 +56,7 @@ namespace CustomAuthWeb.Services {
             return Convert.ToBase64String(_encryptedMessage);
         }
         #endregion Properites
-
-        private readonly RandomNumberGenerator _random = RandomNumberGenerator.Create();
-        public readonly int BlockBitSize = 128;
-        public readonly int KeyBitSize = 256;
-
+        
         /// <summary>
         /// Inject AppSecrets configuration which holds the SecretKey property, used as AES encryption key
         /// </summary>
@@ -73,16 +64,6 @@ namespace CustomAuthWeb.Services {
         public SimpleEncryptor(IOptions<AppSecrets> secrets) {
             _secrets = secrets.Value;
             SetSecretKey(_secrets.SecretKey);
-        }
-
-        /// <summary>
-        /// This helper can be used to generate a key of the appropriate size, which should then be saved in a secret config file.
-        /// </summary>
-        /// <returns>New Random key</returns>
-        private byte[] NewKey() {
-            var key = new byte[KeyBitSize / 8];
-            _random.GetBytes(key);
-            return key;
         }
 
         /// <summary>
