@@ -30,9 +30,13 @@ namespace CustomAuthWeb.Controllers {
         public async Task<IActionResult> Login(LoginFormObject lfo) {
             if (ModelState.IsValid) {
                 User user = await GetUserFromForm(lfo);
-                SaveToSession(user.Id, lfo.RememberMe);
-                // Save user session
-                return RedirectToLocal(lfo.ReturnUrl);
+                if (user != null) {
+                    SaveToSession(user.Id, lfo.RememberMe);
+                    // Save user session
+                    return RedirectToLocal(lfo.ReturnUrl);
+                } else {
+                    TempData["Alert"] = "Invalid username/password";
+                }
             }
             return View(lfo);
         }
