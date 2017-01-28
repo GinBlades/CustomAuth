@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using CustomAuthWeb.Models;
 using CustomAuthWeb.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.DataProtection;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,12 +16,12 @@ namespace CustomAuthWeb.Controllers {
         private const string SESSION_NAME = "CustomAuth";
         private readonly ApplicationDbContext _db;
         private readonly SimpleHasher _hasher;
-        private readonly SimpleEncryptor _encryptor;
+        private readonly IDataProtector _protector;
 
-        public AccountController(ApplicationDbContext db, SimpleHasher hasher, SimpleEncryptor encryptor) {
+        public AccountController(ApplicationDbContext db, SimpleHasher hasher, IDataProtectionProvider dpProvider) {
             _db = db;
             _hasher = hasher;
-            _encryptor = encryptor;
+            _protector = dpProvider.CreateProtector("CustomAuthWeb.Manual");
         }
         public IActionResult Login(string returnUrl = null) {
             return View(new LoginFormObject() { ReturnUrl = returnUrl });
@@ -57,7 +58,7 @@ namespace CustomAuthWeb.Controllers {
         }
 
         private async Task<User> CreateUserAsync(RegisterFormObject rfo) {
-            rfo.Password = _hasher.HashWithEncryption(rfo.Password);
+            rfo.Password = _hasher.HashToString(rfo.Password);
             var user = rfo.ToUser();
             await _db.Users.AddAsync(user);
             await _db.SaveChangesAsync();
@@ -94,8 +95,8 @@ namespace CustomAuthWeb.Controllers {
                 ModelState.AddModelError("Email", "User not found.");
                 return null;
             }
-
-            var valid = _hasher.CompareWithEncryption(lfo.Password, user.Password);
+            // TODO: Rebuild how this compared after hashing password with correct salt.
+            var valid = _hasher.Compare(lfo.Password, user.Password);
 
             if (!valid) {
                 ModelState.AddModelError("Email", "Password is incorrect.");
@@ -106,7 +107,7 @@ namespace CustomAuthWeb.Controllers {
         }
 
         private void SaveToSession(int userId, bool rememberMe) {
-            string encryptedId = _encryptor.EncryptToString(userId.ToString());
+            string encryptedId = _protector.Protect(userId.ToString());
             CookieOptions options = new CookieOptions();
             if (rememberMe) {
                 options.Expires = DateTime.Now.AddMonths(1);

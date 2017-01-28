@@ -28,28 +28,28 @@ namespace CustomAuthWeb.Data {
             var admin = new User() {
                 Email = "admin@example.com",
                 UserName = "Admin",
-                Password = _hasher.HashWithEncryption("secret"),
+                Password = _hasher.HashToString("secret"),
                 Roles = UserRole.Administrator | UserRole.Member
             };
 
             var moderator = new User() {
                 Email = "moderator@example.com",
                 UserName = "Mod",
-                Password = _hasher.HashWithEncryption("secret"),
+                Password = _hasher.HashToString("secret"),
                 Roles = UserRole.Moderator | UserRole.Member
             };
 
             var member = new User() {
                 Email = "member@example.com",
                 UserName = "Member",
-                Password = _hasher.HashWithEncryption("secret"),
+                Password = _hasher.HashToString("secret"),
                 Roles = UserRole.Member
             };
 
             var guest = new User() {
                 Email = "guest@example.com",
                 UserName = "Guest",
-                Password = _hasher.HashWithEncryption("secret"),
+                Password = _hasher.HashToString("secret"),
                 Roles = UserRole.Guest
             };
             var users = new User[] { admin, moderator, member, guest };

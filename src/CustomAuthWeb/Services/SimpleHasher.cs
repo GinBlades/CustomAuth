@@ -4,12 +4,11 @@ using System.Security.Cryptography;
 
 namespace CustomAuthWeb.Services {
     /// <summary>
-    /// The primary purpose of this class is to hash and compare hashed passwords with the 'HashWithEncryption'
-    /// and 'CompareWithEncryption' methods. The other methods may be useful in other areas, but for now they are marked
+    /// The primary purpose of this class is to hash and compare hashed passwords with the 'Hash', 'HashToString',
+    /// and 'Compare' methods. The other methods may be useful in other areas, but for now they are marked
     /// as private so that its clear they are not currently used.
     /// </summary>
     public class SimpleHasher {
-        private readonly SimpleEncryptor _encryptor;
 
         #region SaltProperties
         private byte[] _salt;
@@ -49,14 +48,7 @@ namespace CustomAuthWeb.Services {
             return Convert.ToBase64String(_salt);
         }
         #endregion SaltProperties
-
-        /// <summary>
-        /// Inject SimpleEncryptor for use with passwords that must be encrypted before being hashed.
-        /// </summary>
-        public SimpleHasher(SimpleEncryptor encryptor) {
-            _encryptor = encryptor;
-        }
-
+        
         #region HashOverloads
         /// <summary>
         /// From https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/consumer-apis/password-hashing
@@ -71,7 +63,7 @@ namespace CustomAuthWeb.Services {
                 password: password,
                 salt: _salt,
                 prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 1000,
+                iterationCount: 10000,
                 numBytesRequested: 256 / 8
             );
         }
@@ -87,36 +79,15 @@ namespace CustomAuthWeb.Services {
         }
         #endregion HashOverloads
 
-        /// <summary>
-        /// First encrypts the password using the secret key, then hashes it.
-        /// The string returned can be split to get all the required parameters for matching against the existing hash.
-        /// </summary>
-        /// <param name="password"></param>
-        /// <returns>A string in the format [hash].stm.[encryptionIV].stm.[salt]</returns>
-        public string HashWithEncryption(string password) {
-            _encryptor.Encrypt(password);
-            var hash = Hash(_encryptor.GetEncryptedMessageS());
-            return _encryptor.StmJoiner(new string[] {
-                Convert.ToBase64String(hash),
-                _encryptor.GetIVS(),
-                GetSaltS()
-            });
-        }
+        public string HashToString(string password, string salt = null) {
+            byte[] hash;
+            if (salt != null) {
+                hash = Hash(password, salt);
+            } else {
+                hash = Hash(password);
+            }
 
-        /// <summary>
-        /// Takes in a new guess string and matches it against an existing password. The password is expected to be in the
-        /// format provided by 'HashWithEncryption'
-        /// </summary>
-        /// <param name="guess">Any string</param>
-        /// <param name="password">String in the format [hash].stm.[encryptionIV].stm.[salt]</param>
-        /// <returns>Returns true if guess matches existing password, otherwise false.</returns>
-        public bool CompareWithEncryption(string guess, string password) {
-            // TODO: Validate parts
-            string[] parts = _encryptor.StmSplitter(password);
-            _encryptor.SetIV(parts[1]);
-            _encryptor.Encrypt(guess, _encryptor.GetIVBA());
-            var hashedGuess = Hash(_encryptor.GetEncryptedMessageS(), parts[2]);
-            return Compare(parts[0], Convert.ToBase64String(hashedGuess));
+            return Convert.ToBase64String(hash);
         }
 
         /// <summary>
@@ -125,7 +96,7 @@ namespace CustomAuthWeb.Services {
         /// <param name="stringA"></param>
         /// <param name="stringB"></param>
         /// <returns></returns>
-        private bool Compare(string stringA, string stringB) {
+        public bool Compare(string stringA, string stringB) {
             uint difference = (uint)Math.Abs(stringA.Length - stringB.Length);
             for (var i = 0; i < stringA.Length && i < stringB.Length; i++) {
                 difference += (uint)Math.Abs(stringA[i].CompareTo(stringB[i]));

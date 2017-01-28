@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using CustomAuthWeb.Services;
 using CustomAuthWeb.Filters;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace CustomAuthWeb {
     public class Startup {
@@ -31,6 +32,7 @@ namespace CustomAuthWeb {
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services) {
             services.AddOptions();
+            services.AddDataProtection();
             services.Configure<AppSecrets>(Configuration.GetSection("AppSecrets"));
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
@@ -42,18 +44,17 @@ namespace CustomAuthWeb {
 
             services.AddSingleton<DbSeeder>();
             services.AddSingleton<AssetFileHash>();
-            services.AddTransient<SimpleEncryptor>();
             services.AddTransient<SimpleHasher>();
             services.AddScoped<AuthenticationFilter>();
 
             // Using dependency injection here requires initializing the provider.
             // http://stackoverflow.com/questions/31863981/how-to-resolve-instance-inside-configureservices-in-asp-net-core
             var serviceProvider = services.BuildServiceProvider();
-            var encryptorService = serviceProvider.GetService<SimpleEncryptor>();
+            var protectorService = serviceProvider.GetService<IDataProtectionProvider>();
             var dbContextService = serviceProvider.GetService<ApplicationDbContext>();
             
             services.AddMvc(config => {
-                config.Filters.Add(new AuthenticationFilter(dbContextService, encryptorService));
+                config.Filters.Add(new AuthenticationFilter(dbContextService, protectorService));
             });
             // Must come after AuthenticationFilter
             services.AddScoped<AuthorizationFilter>();
