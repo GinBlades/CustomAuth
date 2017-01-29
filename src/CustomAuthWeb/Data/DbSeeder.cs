@@ -8,11 +8,9 @@ namespace CustomAuthWeb.Data {
     public class DbSeeder {
         private readonly ApplicationDbContext _db;
         private readonly IHostingEnvironment _env;
-        private readonly SimpleHasher _hasher;
-        public DbSeeder(ApplicationDbContext db, IHostingEnvironment env, SimpleHasher hasher) {
+        public DbSeeder(ApplicationDbContext db, IHostingEnvironment env) {
             _db = db;
             _env = env;
-            _hasher = hasher;
         }
 
         public async Task SeedAsync() {
@@ -28,28 +26,28 @@ namespace CustomAuthWeb.Data {
             var admin = new User() {
                 Email = "admin@example.com",
                 UserName = "Admin",
-                Password = _hasher.HashToString("secret"),
+                Password = IdentityBasedHasher.HashPassword("secret").ToHashString(),
                 Roles = UserRole.Administrator | UserRole.Member
             };
 
             var moderator = new User() {
                 Email = "moderator@example.com",
                 UserName = "Mod",
-                Password = _hasher.HashToString("secret"),
+                Password = IdentityBasedHasher.HashPassword("secret").ToHashString(),
                 Roles = UserRole.Moderator | UserRole.Member
             };
 
             var member = new User() {
                 Email = "member@example.com",
                 UserName = "Member",
-                Password = _hasher.HashToString("secret"),
+                Password = IdentityBasedHasher.HashPassword("secret").ToHashString(),
                 Roles = UserRole.Member
             };
 
             var guest = new User() {
                 Email = "guest@example.com",
                 UserName = "Guest",
-                Password = _hasher.HashToString("secret"),
+                Password = IdentityBasedHasher.HashPassword("secret").ToHashString(),
                 Roles = UserRole.Guest
             };
             var users = new User[] { admin, moderator, member, guest };

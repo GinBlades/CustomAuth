@@ -15,12 +15,10 @@ namespace CustomAuthWeb.Controllers {
     public class AccountController : Controller {
         private const string SESSION_NAME = "CustomAuth";
         private readonly ApplicationDbContext _db;
-        private readonly SimpleHasher _hasher;
         private readonly IDataProtector _protector;
 
-        public AccountController(ApplicationDbContext db, SimpleHasher hasher, IDataProtectionProvider dpProvider) {
+        public AccountController(ApplicationDbContext db, IDataProtectionProvider dpProvider) {
             _db = db;
-            _hasher = hasher;
             _protector = dpProvider.CreateProtector("CustomAuthWeb.Manual");
         }
         public IActionResult Login(string returnUrl = null) {
@@ -58,7 +56,7 @@ namespace CustomAuthWeb.Controllers {
         }
 
         private async Task<User> CreateUserAsync(RegisterFormObject rfo) {
-            rfo.Password = _hasher.HashToString(rfo.Password);
+            rfo.Password = IdentityBasedHasher.HashPassword(rfo.Password).ToHashString();
             var user = rfo.ToUser();
             await _db.Users.AddAsync(user);
             await _db.SaveChangesAsync();
@@ -96,7 +94,7 @@ namespace CustomAuthWeb.Controllers {
                 return null;
             }
             // TODO: Rebuild how this compared after hashing password with correct salt.
-            var valid = _hasher.Compare(lfo.Password, user.Password);
+            var valid = IdentityBasedHasher.VerifyHashedPassword(lfo.Password, user.Password);
 
             if (!valid) {
                 ModelState.AddModelError("Email", "Password is incorrect.");

@@ -44,7 +44,6 @@ namespace CustomAuthWeb {
 
             services.AddSingleton<DbSeeder>();
             services.AddSingleton<AssetFileHash>();
-            services.AddTransient<SimpleHasher>();
             services.AddScoped<AuthenticationFilter>();
 
             // Using dependency injection here requires initializing the provider.
