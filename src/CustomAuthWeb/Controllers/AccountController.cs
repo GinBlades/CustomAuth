@@ -8,6 +8,8 @@ using CustomAuthWeb.Models;
 using CustomAuthWeb.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.DataProtection;
+using System.Security.Claims;
+using System.Collections.Generic;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,7 +32,18 @@ namespace CustomAuthWeb.Controllers {
             if (ModelState.IsValid) {
                 User user = await GetUserFromForm(lfo);
                 if (user != null) {
-                    SaveToSession(user.Id, lfo.RememberMe);
+
+                    // Built ClaimsPrincipal based on
+                    // http://stackoverflow.com/questions/20254796/why-is-my-claimsidentity-isauthenticated-always-false-for-web-api-authorize-fil
+                    var claims = new List<Claim>() {
+                        new Claim(ClaimTypes.Name, "AuthUser"),
+                        new Claim(ClaimTypes.Role, user.Roles.ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, user.UserName)
+                    };
+                    var identity = new ClaimsIdentity(claims, "Password");
+                    var principal = new ClaimsPrincipal(new[] { identity });
+
+                    await HttpContext.Authentication.SignInAsync("CustomAuthMiddleware", principal);
                     // Save user session
                     return RedirectToLocal(lfo.ReturnUrl);
                 } else {
@@ -94,7 +107,7 @@ namespace CustomAuthWeb.Controllers {
                 return null;
             }
             // TODO: Rebuild how this compared after hashing password with correct salt.
-            var valid = IdentityBasedHasher.VerifyHashedPassword(lfo.Password, user.Password);
+            var valid = IdentityBasedHasher.VerifyHashedPassword(user.Password, lfo.Password);
 
             if (!valid) {
                 ModelState.AddModelError("Email", "Password is incorrect.");

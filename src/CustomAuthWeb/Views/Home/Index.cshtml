@@ -4,3 +4,11 @@
 @{
 }
 <h1>This is the Home page</h1>
+
+@if (Context.User != null) {
+    @foreach (var identity in Context.User.Identities) {
+        @foreach (var claim in identity.Claims) {
+            <h3>@claim.Type, @claim.Value, @claim.ValueType</h3>
+        }
+    }
+}

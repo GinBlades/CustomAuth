@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using CustomAuthWeb.Services;
 using CustomAuthWeb.Filters;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 
 namespace CustomAuthWeb {
     public class Startup {
@@ -52,10 +53,8 @@ namespace CustomAuthWeb {
             var protectorService = serviceProvider.GetService<IDataProtectionProvider>();
             var dbContextService = serviceProvider.GetService<ApplicationDbContext>();
             
-            services.AddMvc(config => {
-                config.Filters.Add(new AuthenticationFilter(dbContextService, protectorService));
-            });
-            // Must come after AuthenticationFilter
+            services.AddMvc();
+            // Must come after Authentication
             services.AddScoped<AuthorizationFilter>();
         }
 
@@ -77,6 +76,14 @@ namespace CustomAuthWeb {
             }
 
             app.UseStaticFiles();
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions() {
+                AuthenticationScheme = "CustomAuthMiddleware",
+                LoginPath = new PathString("/Account/Login"),
+                AccessDeniedPath = new PathString("/Account/Forbidden"),
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true
+            });
 
             app.UseSession();            
             app.UseMvc(routes => {
