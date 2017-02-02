@@ -1,4 +1,4 @@
-﻿@if (ViewContext.RouteData.Values["AuthUser"] != null) {
+﻿@if (User.Identity.IsAuthenticated) {
     <li><a asp-action="LogOut" asp-controller="Account" data-delete data-return-url="@Url.Action("Index", "Home")">Sign Out</a></li>
 } else {
     <li><a asp-action="Register" asp-controller="Account" asp-route-returnUrl="@Context.Request.Path">Register</a></li>

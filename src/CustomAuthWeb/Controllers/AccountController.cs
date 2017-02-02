@@ -15,6 +15,7 @@ using System.Collections.Generic;
 
 namespace CustomAuthWeb.Controllers {
     public class AccountController : Controller {
+        private const string AUTH_NAME = "CustomAuthMiddleware";
         private const string SESSION_NAME = "CustomAuth";
         private readonly ApplicationDbContext _db;
         private readonly IDataProtector _protector;
@@ -32,25 +33,26 @@ namespace CustomAuthWeb.Controllers {
             if (ModelState.IsValid) {
                 User user = await GetUserFromForm(lfo);
                 if (user != null) {
-
-                    // Built ClaimsPrincipal based on
-                    // http://stackoverflow.com/questions/20254796/why-is-my-claimsidentity-isauthenticated-always-false-for-web-api-authorize-fil
-                    var claims = new List<Claim>() {
-                        new Claim(ClaimTypes.Name, "AuthUser"),
-                        new Claim(ClaimTypes.Role, user.Roles.ToString()),
-                        new Claim(ClaimTypes.NameIdentifier, user.UserName)
-                    };
-                    var identity = new ClaimsIdentity(claims, "Password");
-                    var principal = new ClaimsPrincipal(new[] { identity });
-
-                    await HttpContext.Authentication.SignInAsync("CustomAuthMiddleware", principal);
-                    // Save user session
+                    await LocalLogin(user);
                     return RedirectToLocal(lfo.ReturnUrl);
                 } else {
                     TempData["Alert"] = "Invalid username/password";
                 }
             }
             return View(lfo);
+        }
+
+        private async Task LocalLogin(User user) {
+            // Built ClaimsPrincipal based on
+            // http://stackoverflow.com/questions/20254796/why-is-my-claimsidentity-isauthenticated-always-false-for-web-api-authorize-fil
+            var claims = new List<Claim>() {
+                        new Claim(ClaimTypes.Role, user.Roles.ToString()),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.Email, user.Email)
+                    };
+            var identity = new ClaimsIdentity(claims, "CustomAuthPassword");
+            var principal = new ClaimsPrincipal(new[] { identity });
+            await HttpContext.Authentication.SignInAsync(AUTH_NAME, principal);
         }
 
         public IActionResult Register(string returnUrl = null) {
@@ -61,7 +63,7 @@ namespace CustomAuthWeb.Controllers {
         public async Task<IActionResult> Register(RegisterFormObject rfo) {
             if (ModelState.IsValid) {
                 var user = await CreateUserAsync(rfo);
-                SaveToSession(user.Id, false);
+                await LocalLogin(user);
                 // Save new user and add to session
                 return RedirectToLocal(rfo.ReturnUrl);
             }
@@ -77,9 +79,8 @@ namespace CustomAuthWeb.Controllers {
         }
 
         [HttpDelete]
-        public IActionResult LogOut() {
-            // Delete user session
-            Response.Cookies.Delete(SESSION_NAME);
+        public async Task<IActionResult> LogOut() {
+            await HttpContext.Authentication.SignOutAsync(AUTH_NAME);
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
@@ -115,15 +116,6 @@ namespace CustomAuthWeb.Controllers {
             }
 
             return user;
-        }
-
-        private void SaveToSession(int userId, bool rememberMe) {
-            string encryptedId = _protector.Protect(userId.ToString());
-            CookieOptions options = new CookieOptions();
-            if (rememberMe) {
-                options.Expires = DateTime.Now.AddMonths(1);
-            }
-            Response.Cookies.Append(SESSION_NAME, encryptedId, options);
         }
     }
 }

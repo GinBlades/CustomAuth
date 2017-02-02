@@ -42,10 +42,11 @@ namespace CustomAuthWeb {
                 options.IdleTimeout = TimeSpan.FromSeconds(60);
                 options.CookieHttpOnly = true;
             });
+            // Must come after Authentication
+            services.AddScoped<AuthorizationFilter>();
 
             services.AddSingleton<DbSeeder>();
             services.AddSingleton<AssetFileHash>();
-            services.AddScoped<AuthenticationFilter>();
 
             // Using dependency injection here requires initializing the provider.
             // http://stackoverflow.com/questions/31863981/how-to-resolve-instance-inside-configureservices-in-asp-net-core
@@ -54,8 +55,6 @@ namespace CustomAuthWeb {
             var dbContextService = serviceProvider.GetService<ApplicationDbContext>();
             
             services.AddMvc();
-            // Must come after Authentication
-            services.AddScoped<AuthorizationFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
