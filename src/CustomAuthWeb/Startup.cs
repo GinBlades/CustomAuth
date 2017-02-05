@@ -84,6 +84,11 @@ namespace CustomAuthWeb {
                 AutomaticChallenge = true
             });
 
+            //app.UseGoogleAuthentication(new GoogleOptions() {
+            //    ClientId = Configuration["Authentication:Google:ClientId"],
+            //    ClientSecret = Configuration["Authentication:Google:ClientSecret"]
+            //});
+
             app.UseSession();            
             app.UseMvc(routes => {
                 routes.MapRoute(
