@@ -11,6 +11,7 @@ using CustomAuthWeb.Services;
 using CustomAuthWeb.Filters;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CustomAuthWeb {
     public class Startup {
@@ -54,7 +55,10 @@ namespace CustomAuthWeb {
             var protectorService = serviceProvider.GetService<IDataProtectionProvider>();
             var dbContextService = serviceProvider.GetService<ApplicationDbContext>();
             
-            services.AddMvc();
+            services.AddMvc(options => {
+                options.SslPort = 44374;
+                options.Filters.Add(new RequireHttpsAttribute());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
