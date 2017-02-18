@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.DataProtection;
 using System.Security.Claims;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http.Authentication;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,21 +43,12 @@ namespace CustomAuthWeb.Controllers {
             return View(lfo);
         }
 
-        private async Task LocalLogin(User user) {
-            // Built ClaimsPrincipal based on
-            // http://stackoverflow.com/questions/20254796/why-is-my-claimsidentity-isauthenticated-always-false-for-web-api-authorize-fil
-            var claims = new List<Claim>() {
-                        new Claim(ClaimTypes.Role, user.Roles.ToString()),
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.Email, user.Email)
-                    };
-            var identity = new ClaimsIdentity(claims, "CustomAuthPassword");
-            var principal = new ClaimsPrincipal(new[] { identity });
-            await HttpContext.Authentication.SignInAsync(AUTH_NAME, principal);
-        }
-
         public IActionResult Register(string returnUrl = null) {
             return View(new RegisterFormObject() { ReturnUrl = returnUrl });
+        }
+        
+        public IActionResult GoogleLogin() {
+            return Challenge(new AuthenticationProperties { RedirectUri = "/signin-google" }, "Google");
         }
 
         [HttpPost]
@@ -70,18 +62,31 @@ namespace CustomAuthWeb.Controllers {
             return View(rfo);
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> LogOut() {
+            await HttpContext.Authentication.SignOutAsync(AUTH_NAME);
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
+        private async Task LocalLogin(User user) {
+            // Built ClaimsPrincipal based on
+            // http://stackoverflow.com/questions/20254796/why-is-my-claimsidentity-isauthenticated-always-false-for-web-api-authorize-fil
+            var claims = new List<Claim>() {
+                        new Claim(ClaimTypes.Role, user.Roles.ToString()),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.Email, user.Email)
+                    };
+            var identity = new ClaimsIdentity(claims, "CustomAuthPassword");
+            var principal = new ClaimsPrincipal(new[] { identity });
+            await HttpContext.Authentication.SignInAsync(AUTH_NAME, principal);
+        }
+
         private async Task<User> CreateUserAsync(RegisterFormObject rfo) {
             rfo.Password = IdentityBasedHasher.HashPassword(rfo.Password).ToHashString();
             var user = rfo.ToUser();
             await _db.Users.AddAsync(user);
             await _db.SaveChangesAsync();
             return user;
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> LogOut() {
-            await HttpContext.Authentication.SignOutAsync(AUTH_NAME);
-            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         private IActionResult RedirectToLocal(string returnUrl) {

@@ -12,6 +12,7 @@ using CustomAuthWeb.Filters;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CustomAuthWeb {
     public class Startup {
@@ -49,12 +50,6 @@ namespace CustomAuthWeb {
             services.AddSingleton<DbSeeder>();
             services.AddSingleton<AssetFileHash>();
 
-            // Using dependency injection here requires initializing the provider.
-            // http://stackoverflow.com/questions/31863981/how-to-resolve-instance-inside-configureservices-in-asp-net-core
-            var serviceProvider = services.BuildServiceProvider();
-            var protectorService = serviceProvider.GetService<IDataProtectionProvider>();
-            var dbContextService = serviceProvider.GetService<ApplicationDbContext>();
-            
             services.AddMvc(options => {
                 options.SslPort = 44374;
                 options.Filters.Add(new RequireHttpsAttribute());
@@ -88,18 +83,19 @@ namespace CustomAuthWeb {
                 AutomaticChallenge = true
             });
 
-            //app.UseGoogleAuthentication(new GoogleOptions() {
-            //    ClientId = Configuration["Authentication:Google:ClientId"],
-            //    ClientSecret = Configuration["Authentication:Google:ClientSecret"]
-            //});
+            app.UseGoogleAuthentication(new GoogleOptions() {
+                ClientId = Configuration["Authentication:Google:ClientId"],
+                ClientSecret = Configuration["Authentication:Google:ClientSecret"],
+                SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme
+            });
 
-            app.UseSession();            
+            app.UseSession();
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            
+
             // seeder.SeedAsync().Wait();
         }
     }
