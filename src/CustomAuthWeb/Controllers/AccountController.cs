@@ -48,7 +48,7 @@ namespace CustomAuthWeb.Controllers {
         }
         
         public IActionResult GoogleLogin() {
-            return Challenge(new AuthenticationProperties { RedirectUri = "/signin-google" }, "Google");
+            return Challenge(new AuthenticationProperties { RedirectUri = "/" }, "Google");
         }
 
         [HttpPost]

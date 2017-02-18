@@ -12,7 +12,6 @@ using CustomAuthWeb.Filters;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CustomAuthWeb {
     public class Startup {
@@ -86,7 +85,7 @@ namespace CustomAuthWeb {
             app.UseGoogleAuthentication(new GoogleOptions() {
                 ClientId = Configuration["Authentication:Google:ClientId"],
                 ClientSecret = Configuration["Authentication:Google:ClientSecret"],
-                SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme
+                SignInScheme = "CustomAuthMiddleware"
             });
 
             app.UseSession();
